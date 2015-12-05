@@ -16,10 +16,15 @@ public class InputReciever {
 
         //A do-while loop to ensure that the user inputs a number rather than ohter types of input
         do {
-            try {
+            try
+            {
                 x=1;
-                inscan.nextInt();
-            } catch (NumberFormatException e) {
+                inNum = inscan.nextInt();
+                if(!validateRedirectInput(inNum)) // check to see if number is valid based off of the selection parameters
+                    x=0;
+            }
+            catch (NumberFormatException e)
+            {
                 x=0;
             }
         }while(x==0);
@@ -27,10 +32,13 @@ public class InputReciever {
         return inNum;
     }
 
-    public boolean validateInput(int x){
+    //Validate user input when selecting which option to choose from the main menu
+    public boolean validateRedirectInput(int x){
         if(x<1 || x>5)
             return false;
         else
             return true;
     }
+
+
 }
