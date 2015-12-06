@@ -180,7 +180,94 @@ public class Tester {
         ct.clearFile();
     }
 
+    //Test to see if user is not able to buy coffee when there is no current
+    //customer logged in
+    @Test
+    public void kBuyCoffeeNoCurrentCustomer() throws IOException {
+        CardTracker ct = new CardTracker();
 
+        String returnedString = ct.buyCoffee();
+
+        assertEquals(returnedString, "Please set current customer!");
+    }
+
+    //Test to see if user is not able to buy Pastry when there is no current
+    //customer logged in
+    @Test
+    public void lBuyPastryNoCurrentCustomer() throws IOException {
+        CardTracker ct = new CardTracker();
+
+        String returnedString = ct.buyPastry();
+
+        assertEquals(returnedString, "Please set current customer!");
+    }
+
+    //Test to see if user is able to buy a coffee with a current customer logged in
+    //The following values should be displayed
+    //balence = $1
+    //coffee count = 1
+    @Test
+    public void mBuyCoffeeWithCurrentCustomer() throws IOException {
+        CardTracker ct = new CardTracker();
+
+        ct.addUser("Bob");
+        ct.setCurrentUser("Bob");
+        String returnedString = ct.buyCoffee();
+
+        assertEquals(returnedString, "Thank you Bob, here is your coffee! Your balence is now $1 and your coffee count is 1");
+
+        ct.clearFile();
+    }
+
+    //Test to see if user is able to buy a pastry with a current customer logged in
+    //The following values should be displayed
+    //balence = $2
+    //coffee count = 0
+    @Test
+    public void nBuyPastryWithCurrentCustomer() throws IOException {
+        CardTracker ct = new CardTracker();
+
+        ct.addUser("Bob");
+        ct.setCurrentUser("Bob");
+        String returnedString = ct.buyPastry();
+
+        assertEquals(returnedString, "Thank you Bob, here is your pastry! Your balence is now $2 and your coffee count is 0");
+
+        ct.clearFile();
+    }
+
+    //Test to see if user is able to buy a coffee then a pastry with a current customer logged in
+    //The following values should be displayed
+    //balence = $3
+    //coffee count = 1
+    @Test
+    public void oBuyCoffeeThenPastry() throws IOException {
+        CardTracker ct = new CardTracker();
+
+        ct.addUser("Bob");
+        ct.setCurrentUser("Bob");
+        ct.buyCoffee();
+        String returnedString = ct.buyPastry();
+
+        assertEquals(returnedString, "Thank you Bob, here is your pastry! Your balence is now $3 and your coffee count is 1");
+
+        ct.clearFile();
+    }
+
+    //Test to see if the user gets a free coffee when his/her coffee count is 10
+    @Test
+    public void pgetFreeCoffee() throws IOException {
+        CardTracker ct = new CardTracker();
+        String returnedString="";
+
+        ct.addUser("Bob");
+        ct.setCurrentUser("Bob");
+
+        for(int i=0;i<10;i++)
+            returnedString = ct.buyCoffee();
+
+        assertEquals(returnedString, "Huray Bob! You get a free coffee! Your balence is now $10 and your coffee count is reset to 0");
+    }
 
 
 

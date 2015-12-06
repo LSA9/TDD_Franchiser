@@ -115,11 +115,29 @@ public class CardTracker {
     }
 
     public String buyPastry(){
-        return "Pastry bought!";
+        if(currentUser==null)
+            return "Please set current customer!";
+
+        int cid = customerList.get(currentUser).cardID;
+        cardList.get(cid).balence += 2;
+
+        return "Thank you "+currentUser+", here is your pastry! Your balence is now $"+cardList.get(cid).balence+" and your coffee count is "+cardList.get(cid).coffeeCount;
     }
 
     public String buyCoffee(){
-        return "Coffee bought!";
+        if(currentUser==null)
+            return "Please set current customer!";
+
+        int cid = customerList.get(currentUser).cardID;
+        cardList.get(cid).balence += 1;
+        cardList.get(cid).coffeeCount += 1;
+
+        if(cardList.get(cid).coffeeCount==10){
+            cardList.get(cid).coffeeCount = 0;
+            return "Huray "+currentUser+"! You get a free coffee! Your balence is now $"+cardList.get(cid).balence+" and your coffee count is reset to 0";
+        }
+        else
+            return "Thank you "+currentUser+", here is your coffee! Your balence is now $"+cardList.get(cid).balence+" and your coffee count is "+cardList.get(cid).coffeeCount;
     }
 
     public String quit(){
