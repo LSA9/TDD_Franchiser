@@ -267,6 +267,39 @@ public class Tester {
             returnedString = ct.buyCoffee();
 
         assertEquals(returnedString, "Huray Bob! You get a free coffee! Your balence is now $10 and your coffee count is reset to 0");
+
+        ct.clearFile();
+    }
+
+    //Test to see if the proper information is stored in the storage files when the program is
+    //exited
+    @Test
+    public void qStoreInfoUponExit() throws IOException {
+        FileReader file = new FileReader("customer_list.txt");
+        BufferedReader reader = new BufferedReader(file);
+        CardTracker ct = new CardTracker();
+
+        //Adding users while program is running
+        ct.addUser("Bob");
+        ct.addUser("Billy");
+        ct.addUser("Ben");
+        ct.setCurrentUser("Bob");
+
+        //Change values for Bob's card information
+        ct.buyCoffee();
+        ct.buyPastry();
+
+        ct.quit();
+
+        String line;
+        line = reader.readLine();
+        assertEquals(line, "Billy/2/0/0");
+        line = reader.readLine();
+        assertEquals(line, "Bob/1/3/1");
+        line = reader.readLine();
+        assertEquals(line, "Ben/3/0/0");
+
+        ct.clearFile();
     }
 
 
