@@ -2,6 +2,7 @@
  * Created by Aronson1 on 12/4/15.
  */
 
+import junit.framework.TestCase;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -63,8 +64,20 @@ public class Tester {
         ct.addUser("Bob");
 
         String s = reader.readLine();
-        assertEquals(s, "Bob/1/0.0/0");
+        assertEquals(s, "Bob/1/0/0");
     }
+
+    @Test
+    public void epopulateListOnStartTest() throws IOException {
+        CardTracker ct = new CardTracker();
+
+        String name = ct.customerList.get(0).name;
+        int firstCardID = ct.cardList.get(0).cardID;
+
+        assertEquals(name, "Bob");
+        assertEquals(firstCardID,1);
+    }
+    
 
 
 }

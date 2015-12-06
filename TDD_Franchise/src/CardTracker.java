@@ -18,12 +18,23 @@ public class CardTracker {
 
     public CardTracker() throws IOException {
         inscan = new InputReciever();
-        String curDir = System.getProperty("user.dir");
-        System.out.println(curDir);
         file = new FileReader("customer_list.txt");
         writeToFile = new FileWriter("customer_list.txt",true);
         reader = new BufferedReader(file);
         printer = new BufferedWriter(writeToFile);
+        populateLists();
+    }
+
+    public void populateLists() throws IOException {
+        String line;
+        String [] tokens;
+        int index = 0;
+
+        while((line = reader.readLine()) != null){
+            tokens = line.split("/");
+            customerList.add(new Customer(tokens[0],Integer.parseInt(tokens[1])));
+            cardList.add(new Card(Integer.parseInt(tokens[1]),Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
+        }
     }
 
     public String redirectUserInput(int input) throws IOException {
