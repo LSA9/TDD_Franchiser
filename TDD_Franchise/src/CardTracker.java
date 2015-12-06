@@ -16,6 +16,7 @@ public class CardTracker {
     BufferedWriter printer;
     HashMap<String,Customer> customerList = new HashMap<String,Customer>();
     HashMap<Integer,Card> cardList = new HashMap<Integer,Card>();
+    String currentUser;
 
 
     public CardTracker() throws IOException {
@@ -27,6 +28,13 @@ public class CardTracker {
         populateLists();
     }
 
+    public String setCurrentUser(String name){
+        if(!customerList.containsKey(name))
+            return "No customer exists by that name please try again or create a new customer.";
+        else
+            return "Hello " + name + ", what would you like to order?";
+    }
+
     public void populateLists() throws IOException {
         String line;
         String [] tokens;
@@ -34,7 +42,7 @@ public class CardTracker {
 
         while((line = reader.readLine()) != null){
             tokens = line.split("/");
-            customerList.put(tokens[0],new Customer(tokens[0],Integer.parseInt(tokens[1])));
+            customerList.put(tokens[0], new Customer(tokens[0], Integer.parseInt(tokens[1])));
             cardList.put(Integer.parseInt(tokens[1]),new Card(Integer.parseInt(tokens[1]),Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
         }
     }
@@ -78,12 +86,11 @@ public class CardTracker {
         Card newCard = new Card(cardList.size()+1);
 
         //Add new customer and card objects to the cardList and customerList
-        customerList.add(newCustomer);
-        cardList.add(newCard);
+        customerList.put(name, newCustomer);
+        cardList.put(cardList.size()+1,newCard);
 
         //Create a new string to store in file storage for future runs of program
         String storeString = newCustomer.name +"/"+ newCustomer.cardID +"/"+ newCard.balence +"/"+ newCard.coffeeCount+"\n";
-        System.out.println(storeString);
         printer.append(storeString);
         printer.flush();
 
