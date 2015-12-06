@@ -84,6 +84,8 @@ public class Tester {
         ct.clearFile();
     }
 
+    //Test to see if the customer list and card list are populated correctly at
+    //the begining of the program when more than one customer exists
     @Test
     public void fpopulateListOnStartTestMoreThanOne() throws IOException {
         //Writing extra lines to storage file
@@ -112,6 +114,16 @@ public class Tester {
         assertEquals(thirdCardID,3);
 
         ct.clearFile();
+    }
+
+    
+    @Test
+    public void gBuyPastryTestOneUser() throws IOException {
+        Writer writeFile = new FileWriter("customer_list.txt", true);
+        BufferedWriter writer = new BufferedWriter(writeFile);
+        writer.append("Bob/1/0/0\n");
+
+
     }
 
 

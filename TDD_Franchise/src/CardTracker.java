@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -13,8 +14,8 @@ public class CardTracker {
     Writer writeToFile;
     BufferedReader reader;
     BufferedWriter printer;
-    ArrayList<Customer> customerList = new ArrayList<Customer>();
-    ArrayList<Card> cardList = new ArrayList<Card>();
+    HashMap<String,Customer> customerList = new HashMap<String,Customer>();
+    HashMap<Integer,Card> cardList = new HashMap<Integer,Card>();
 
 
     public CardTracker() throws IOException {
@@ -33,8 +34,8 @@ public class CardTracker {
 
         while((line = reader.readLine()) != null){
             tokens = line.split("/");
-            customerList.add(new Customer(tokens[0],Integer.parseInt(tokens[1])));
-            cardList.add(new Card(Integer.parseInt(tokens[1]),Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
+            customerList.put(tokens[0],new Customer(tokens[0],Integer.parseInt(tokens[1])));
+            cardList.put(Integer.parseInt(tokens[1]),new Card(Integer.parseInt(tokens[1]),Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
         }
     }
 
