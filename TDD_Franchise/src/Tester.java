@@ -8,6 +8,9 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -67,6 +70,8 @@ public class Tester {
 
         String s = reader.readLine();
         assertEquals(s, "Bob/1/0/0");
+
+        ct.clearFile();
     }
 
     //Test to see if the customer list and card list are populated correctly at
@@ -75,8 +80,10 @@ public class Tester {
     public void epopulateListOnStartTestOnlyOne() throws IOException {
         CardTracker ct = new CardTracker();
 
-        String name = ct.customerList.get(0).name;
-        int firstCardID = ct.cardList.get(0).cardID;
+        ct.addUser("Bob");
+
+        String name = ct.customerList.get("Bob").name;
+        int firstCardID = ct.cardList.get(1).cardID;
 
         assertEquals(name, "Bob");
         assertEquals(firstCardID,1);
@@ -84,6 +91,8 @@ public class Tester {
         ct.clearFile();
     }
 
+    //Test to see if the customer list and card list are populated correctly at
+    //the begining of the program when more than one customer exists
     @Test
     public void fpopulateListOnStartTestMoreThanOne() throws IOException {
         //Writing extra lines to storage file
@@ -98,18 +107,49 @@ public class Tester {
 
         CardTracker ct = new CardTracker();
 
-        String firstname = ct.customerList.get(0).name;
-        int firstCardID = ct.cardList.get(0).cardID;
+        //Check first value
+        String firstname = ct.customerList.get("Bob").name;
+        int firstCardID = ct.cardList.get(1).cardID;
         assertEquals(firstname, "Bob");
         assertEquals(firstCardID,1);
-        String secondname = ct.customerList.get(1).name;
-        int secondCardID = ct.cardList.get(1).cardID;
+
+        //Check second value
+        String secondname = ct.customerList.get("Billy").name;
+        int secondCardID = ct.cardList.get(2).cardID;
         assertEquals(secondname, "Billy");
         assertEquals(secondCardID,2);
-        String thirdname = ct.customerList.get(2).name;
-        int thirdCardID = ct.cardList.get(2).cardID;
+
+        //Check Third value
+        String thirdname = ct.customerList.get("Len").name;
+        int thirdCardID = ct.cardList.get(3).cardID;
         assertEquals(thirdname, "Len");
         assertEquals(thirdCardID,3);
+
+        ct.clearFile();
+    }
+
+
+    //Test to see if the current customer is set when it is changed when
+    //the specified customer exists in the file storage
+    @Test
+    public void gSetCustomerWhenExistsTest() throws IOException {
+        CardTracker ct = new CardTracker();
+        ct.addUser("Bob");
+        String returnedString = ct.setCurrentUser("Bob");
+
+        assertEquals(returnedString, "Hello Bob, what would you like to order?");
+
+        ct.clearFile();
+    }
+
+    //Test to see that the user cannot set the current customer to a customer
+    //that does not exist
+    @Test
+    public void hSetCustomerWhenDoenstExistTest() throws IOException {
+        CardTracker ct = new CardTracker();
+        String returnedString = ct.setCurrentUser("Bob");
+
+        assertEquals(returnedString, "No customer exists by that name please try again or create a new customer.");
 
         ct.clearFile();
     }
