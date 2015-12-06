@@ -80,6 +80,8 @@ public class Tester {
 
         assertEquals(name, "Bob");
         assertEquals(firstCardID,1);
+
+        ct.clearFile();
     }
 
     @Test
@@ -87,6 +89,8 @@ public class Tester {
         //Writing extra lines to storage file
         Writer writeFile = new FileWriter("customer_list.txt", true);
         BufferedWriter writer = new BufferedWriter(writeFile);
+        writer.append("Bob/1/0/0\n");
+        writer.flush();
         writer.append("Billy/2/0/0\n");
         writer.flush();
         writer.append("Len/3/0/0\n");
@@ -107,8 +111,10 @@ public class Tester {
         assertEquals(thirdname, "Len");
         assertEquals(thirdCardID,3);
 
-
+        ct.clearFile();
     }
+
+
 
 
 
