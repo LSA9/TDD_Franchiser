@@ -10,7 +10,7 @@ public class InputReciever {
         inscan = new Scanner(System.in);
     }
 
-    public int query(){
+    public int queryRedirect(){
         int x=0;
         int inNum=0;
 
@@ -30,6 +30,11 @@ public class InputReciever {
         }while(x==0);
 
         return inNum;
+    }
+
+    public String queryString(){
+        String s = inscan.nextLine();
+        return s;
     }
 
     //Validate user input when selecting which option to choose from the main menu
