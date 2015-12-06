@@ -23,7 +23,7 @@ public class Tester {
     //input validation method within the InputReciever class catches the wrong
     //input
     @Test
-    public void atestValidInputWrongInput(){
+    public void testValidInputWrongInput(){
         InputReciever ir = new InputReciever();
         boolean validated = ir.validateRedirectInput(6);
         assertFalse(validated);
@@ -33,35 +33,17 @@ public class Tester {
     //input validation method within the InputReciever class catches the correct
     //input
     @Test
-    public void btestValidateInputCorrectInput(){
+    public void testValidateInputCorrectInput(){
         InputReciever ir = new InputReciever();
         boolean validated = ir.validateRedirectInput(3);
         assertTrue(validated);
     }
 
-    //Test to ensure that user input from the start menu redirects to the proper
-    //part of the code
-//    @Test
-//    public void cuserInputRedirection() throws FileNotFoundException, UnsupportedEncodingException {
-//        CardTracker ct = new CardTracker();
-//        String s;
-//
-//        s = ct.redirectUserInput(1);
-//        assertEquals(s, "Account Created!");
-//        s = ct.redirectUserInput(2);
-//        assertEquals(s, "Your balence is $0.00");
-//        s = ct.redirectUserInput(3);
-//        assertEquals(s, "Pastry bought!");
-//        s = ct.redirectUserInput(4);
-//        assertEquals(s,"Coffee bought!");
-//        s = ct.redirectUserInput(5);
-//        assertEquals(s,"Goodbye!");
-//    }
 
     //Test in order to see if users are created and stored in the file
     //storage system.
     @Test
-    public void duserAndCardCreationTest() throws IOException {
+    public void userAndCardCreationTest() throws IOException {
         FileReader file = new FileReader("customer_list.txt");
         BufferedReader reader = new BufferedReader(file);
         CardTracker ct = new CardTracker();
@@ -77,7 +59,7 @@ public class Tester {
     //Test to see if the customer list and card list are populated correctly at
     //the begining of the program when only one customer exists
     @Test
-    public void epopulateListOnStartTestOnlyOne() throws IOException {
+    public void populateListOnStartTestOnlyOne() throws IOException {
         CardTracker ct = new CardTracker();
 
         ct.addUser("Bob");
@@ -94,7 +76,7 @@ public class Tester {
     //Test to see if the customer list and card list are populated correctly at
     //the begining of the program when more than one customer exists
     @Test
-    public void fpopulateListOnStartTestMoreThanOne() throws IOException {
+    public void populateListOnStartTestMoreThanOne() throws IOException {
         //Writing extra lines to storage file
         Writer writeFile = new FileWriter("customer_list.txt", true);
         BufferedWriter writer = new BufferedWriter(writeFile);
@@ -132,7 +114,7 @@ public class Tester {
     //Test to see if the current customer is set when it is changed when
     //the specified customer exists in the file storage
     @Test
-    public void gSetCustomerWhenExistsTest() throws IOException {
+    public void SetCustomerWhenExistsTest() throws IOException {
         CardTracker ct = new CardTracker();
         ct.addUser("Bob");
         String returnedString = ct.setCurrentUser("Bob");
@@ -145,7 +127,7 @@ public class Tester {
     //Test to see that the user cannot set the current customer to a customer
     //that does not exist
     @Test
-    public void hSetCustomerWhenDoenstExistTest() throws IOException {
+    public void SetCustomerWhenDoenstExistTest() throws IOException {
         CardTracker ct = new CardTracker();
         String returnedString = ct.setCurrentUser("Bob");
 
@@ -156,7 +138,7 @@ public class Tester {
 
     //Test to get balence of current customer
     @Test
-    public void iGetBalenceWhenOneUser() throws IOException {
+    public void GetBalenceWhenOneUser() throws IOException {
         CardTracker ct = new CardTracker();
 
         ct.addUser("Bob");
@@ -170,7 +152,7 @@ public class Tester {
 
     //Test to get balence when no current customer
     @Test
-    public void jGetBalenceWhenNoUser() throws IOException {
+    public void GetBalenceWhenNoUser() throws IOException {
         CardTracker ct = new CardTracker();
 
         String returnedString = ct.cardBalence();
@@ -183,7 +165,7 @@ public class Tester {
     //Test to see if user is not able to buy coffee when there is no current
     //customer logged in
     @Test
-    public void kBuyCoffeeNoCurrentCustomer() throws IOException {
+    public void BuyCoffeeNoCurrentCustomer() throws IOException {
         CardTracker ct = new CardTracker();
 
         String returnedString = ct.buyCoffee();
@@ -194,7 +176,7 @@ public class Tester {
     //Test to see if user is not able to buy Pastry when there is no current
     //customer logged in
     @Test
-    public void lBuyPastryNoCurrentCustomer() throws IOException {
+    public void BuyPastryNoCurrentCustomer() throws IOException {
         CardTracker ct = new CardTracker();
 
         String returnedString = ct.buyPastry();
@@ -207,7 +189,7 @@ public class Tester {
     //balence = $1
     //coffee count = 1
     @Test
-    public void mBuyCoffeeWithCurrentCustomer() throws IOException {
+    public void BuyCoffeeWithCurrentCustomer() throws IOException {
         CardTracker ct = new CardTracker();
 
         ct.addUser("Bob");
@@ -224,7 +206,7 @@ public class Tester {
     //balence = $2
     //coffee count = 0
     @Test
-    public void nBuyPastryWithCurrentCustomer() throws IOException {
+    public void BuyPastryWithCurrentCustomer() throws IOException {
         CardTracker ct = new CardTracker();
 
         ct.addUser("Bob");
@@ -241,7 +223,7 @@ public class Tester {
     //balence = $3
     //coffee count = 1
     @Test
-    public void oBuyCoffeeThenPastry() throws IOException {
+    public void BuyCoffeeThenPastry() throws IOException {
         CardTracker ct = new CardTracker();
 
         ct.addUser("Bob");
@@ -256,7 +238,7 @@ public class Tester {
 
     //Test to see if the user gets a free coffee when his/her coffee count is 10
     @Test
-    public void pgetFreeCoffee() throws IOException {
+    public void getFreeCoffee() throws IOException {
         CardTracker ct = new CardTracker();
         String returnedString="";
 
@@ -274,7 +256,7 @@ public class Tester {
     //Test to see if the proper information is stored in the storage files when the program is
     //exited
     @Test
-    public void qStoreInfoUponExit() throws IOException {
+    public void StoreInfoUponExit() throws IOException {
         FileReader file = new FileReader("customer_list.txt");
         BufferedReader reader = new BufferedReader(file);
         CardTracker ct = new CardTracker();
@@ -300,6 +282,16 @@ public class Tester {
         assertEquals(line, "Ben/3/0/0");
 
         ct.clearFile();
+    }
+
+    @Test
+    public void uniqueNameTest() throws IOException {
+        CardTracker ct = new CardTracker();
+
+        ct.addUser("Bob");
+        int i = ct.addUser("Bob");
+
+        assertEquals(i,-1);
     }
 
 
