@@ -87,17 +87,24 @@ public class CardTracker {
     //Query for user input and send input to the addUser method to create the
     //user and new card for the user
     public String customerCreation() throws IOException {
-        System.out.println("Please enter your name:\n");
+        System.out.println("Please enter your username:\n");
         String name = inscan.queryString();
 
-        addUser(name);
+        int unique = addUser(name);
 
-        return "Account Created!";
+        if(unique==1)
+            return "Account Created!";
+        else
+            return "Username already exists please try again";
     }
 
     //Create new customer and card objects and store their info in the customer_list.txt
     //file
-    public void addUser(String name) throws IOException {
+    public int addUser(String name) throws IOException {
+
+        if(customerList.containsKey(name))
+            return -1;
+
         //Create new customer and card objects
         Customer newCustomer = new Customer(name, cardList.size()+1);//cardlist.size() is used to give unique id
         Card newCard = new Card(cardList.size()+1);
@@ -110,6 +117,7 @@ public class CardTracker {
         String storeString = newCustomer.name +"/"+ newCustomer.cardID +"/"+ newCard.balence +"/"+ newCard.coffeeCount+"\n";
         printer.append(storeString);
         printer.flush();
+        return 1;
 
     }
 
