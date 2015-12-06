@@ -55,6 +55,8 @@ public class Tester {
 //        assertEquals(s,"Goodbye!");
 //    }
 
+    //Test in order to see if users are created and stored in the file
+    //storage system.
     @Test
     public void duserAndCardCreationTest() throws IOException {
         FileReader file = new FileReader("customer_list.txt");
@@ -67,8 +69,10 @@ public class Tester {
         assertEquals(s, "Bob/1/0/0");
     }
 
+    //Test to see if the customer list and card list are populated correctly at
+    //the begining of the program when only one customer exists
     @Test
-    public void epopulateListOnStartTest() throws IOException {
+    public void epopulateListOnStartTestOnlyOne() throws IOException {
         CardTracker ct = new CardTracker();
 
         String name = ct.customerList.get(0).name;
@@ -77,7 +81,36 @@ public class Tester {
         assertEquals(name, "Bob");
         assertEquals(firstCardID,1);
     }
-    
+
+    @Test
+    public void fpopulateListOnStartTestMoreThanOne() throws IOException {
+        //Writing extra lines to storage file
+        Writer writeFile = new FileWriter("customer_list.txt", true);
+        BufferedWriter writer = new BufferedWriter(writeFile);
+        writer.append("Billy/2/0/0\n");
+        writer.flush();
+        writer.append("Len/3/0/0\n");
+        writer.flush();
+
+        CardTracker ct = new CardTracker();
+
+        String firstname = ct.customerList.get(0).name;
+        int firstCardID = ct.cardList.get(0).cardID;
+        assertEquals(firstname, "Bob");
+        assertEquals(firstCardID,1);
+        String secondname = ct.customerList.get(1).name;
+        int secondCardID = ct.cardList.get(1).cardID;
+        assertEquals(secondname, "Billy");
+        assertEquals(secondCardID,2);
+        String thirdname = ct.customerList.get(2).name;
+        int thirdCardID = ct.cardList.get(2).cardID;
+        assertEquals(thirdname, "Len");
+        assertEquals(thirdCardID,3);
+
+
+    }
+
+
 
 
 }
