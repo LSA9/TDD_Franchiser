@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -103,5 +104,13 @@ public class CardTracker {
         return "Goodbye!";
     }
 
+    //Method to clear the contents of the storage files for testing purposes
+    public void clearFile() throws IOException {
+        Writer clearerFile = new FileWriter("customer_list.txt");
+        BufferedWriter clearWriter = new BufferedWriter(clearerFile);
+
+        clearWriter.write("");
+        clearWriter.flush();
+    }
 
 }
