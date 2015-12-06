@@ -16,7 +16,7 @@ public class CardTracker {
     BufferedWriter printer;
     HashMap<String,Customer> customerList = new HashMap<String,Customer>();
     HashMap<Integer,Card> cardList = new HashMap<Integer,Card>();
-    String currentUser;
+    String currentUser=null;
 
 
     public CardTracker() throws IOException {
@@ -28,11 +28,34 @@ public class CardTracker {
         populateLists();
     }
 
+    public String redirectUserInput(int input) throws IOException {
+        String returnString = "";
+        if(input==1)
+            returnString = customerCreation();
+        else if(input==2)
+            returnString = cardBalence();
+        else if(input==3)
+            returnString = buyPastry();
+        else if(input==4)
+            returnString = buyCoffee();
+        else if(input==5) {
+            System.out.println("Who would you like to set the current customer to?");
+            String currCust = inscan.queryString();
+            setCurrentUser(currCust);
+        }
+        else if(input==6)
+            returnString = quit();
+
+        return returnString;
+    }
+
     public String setCurrentUser(String name){
         if(!customerList.containsKey(name))
             return "No customer exists by that name please try again or create a new customer.";
-        else
+        else {
+            currentUser = name;
             return "Hello " + name + ", what would you like to order?";
+        }
     }
 
     public void populateLists() throws IOException {
@@ -47,21 +70,6 @@ public class CardTracker {
         }
     }
 
-    public String redirectUserInput(int input) throws IOException {
-        String returnString = "";
-        if(input==1)
-            returnString = customerCreation();
-        else if(input==2)
-            returnString = cardBalence();
-        else if(input==3)
-            returnString = buyPastry();
-        else if(input==4)
-            returnString = buyCoffee();
-        else if(input==5)
-            returnString = quit();
-
-        return returnString;
-    }
 
     //---------------------------------------------------------------------------
     // User Creation Section
@@ -97,7 +105,13 @@ public class CardTracker {
     }
 
     public String cardBalence(){
-        return "Your balence is $0.00";
+        if(currentUser==null)
+            return "Please set current customer!";
+        else {
+            int cid = customerList.get(currentUser).cardID;
+            int balence = cardList.get(cid).balence;
+            return "Your balence is $" + balence;
+        }
     }
 
     public String buyPastry(){

@@ -154,6 +154,31 @@ public class Tester {
         ct.clearFile();
     }
 
+    //Test to get balence of current customer
+    @Test
+    public void iGetBalenceWhenOneUser() throws IOException {
+        CardTracker ct = new CardTracker();
+
+        ct.addUser("Bob");
+        ct.setCurrentUser("Bob");
+        String returnedString = ct.cardBalence();
+
+        assertEquals(returnedString,"Your balence is $0");
+
+        ct.clearFile();
+    }
+
+    //Test to get balence when no current customer
+    @Test
+    public void jGetBalenceWhenNoUser() throws IOException {
+        CardTracker ct = new CardTracker();
+
+        String returnedString = ct.cardBalence();
+
+        assertEquals(returnedString, "Please set current customer!");
+
+        ct.clearFile();
+    }
 
 
 

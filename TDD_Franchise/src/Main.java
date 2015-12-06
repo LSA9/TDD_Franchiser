@@ -21,7 +21,8 @@ public class Main {
                 "2) View your card balance\n" +
                 "3) Buy a pastry for $2.00\n" +
                 "4) Buy a coffee for $1.00\n" +
-                "5) Quit");
+                "5) Change or set the current user" +
+                "6) Quit");
 
 
         do{
