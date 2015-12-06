@@ -1,14 +1,14 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.Buffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by Aronson1 on 12/4/15.
  */
 public class CardTracker {
 
+    //Instance variables
     InputReciever inscan;
     FileReader file;
     Writer writeToFile;
@@ -19,6 +19,8 @@ public class CardTracker {
     String currentUser=null;
 
 
+    //Constructor for CardTracker class where instance variables are set and info
+    //from the file storage is read and placed in the proper lists
     public CardTracker() throws IOException {
         inscan = new InputReciever();
         file = new FileReader("customer_list.txt");
@@ -28,6 +30,21 @@ public class CardTracker {
         populateLists();
     }
 
+    //Populates the customer and card lists with the proper information from the
+    //file storage system
+    public void populateLists() throws IOException {
+        String line;
+        String [] tokens;
+        int index = 0;
+
+        while((line = reader.readLine()) != null){
+            tokens = line.split("/");
+            customerList.put(tokens[0], new Customer(tokens[0], Integer.parseInt(tokens[1])));
+            cardList.put(Integer.parseInt(tokens[1]),new Card(Integer.parseInt(tokens[1]),Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
+        }
+    }
+
+    //Redirects user input from the main method to their respective methods
     public String redirectUserInput(int input) throws IOException {
         String returnString = "";
         if(input==1)
@@ -41,7 +58,7 @@ public class CardTracker {
         else if(input==5) {
             System.out.println("Who would you like to set the current customer to?");
             String currCust = inscan.queryString();
-            setCurrentUser(currCust);
+            returnString = setCurrentUser(currCust);
         }
         else if(input==6)
             returnString = quit();
@@ -49,6 +66,10 @@ public class CardTracker {
         return returnString;
     }
 
+
+    //---------------------------------------------------------------------------
+    // Set current user
+    //---------------------------------------------------------------------------
     public String setCurrentUser(String name){
         if(!customerList.containsKey(name))
             return "No customer exists by that name please try again or create a new customer.";
@@ -58,21 +79,9 @@ public class CardTracker {
         }
     }
 
-    public void populateLists() throws IOException {
-        String line;
-        String [] tokens;
-        int index = 0;
-
-        while((line = reader.readLine()) != null){
-            tokens = line.split("/");
-            customerList.put(tokens[0], new Customer(tokens[0], Integer.parseInt(tokens[1])));
-            cardList.put(Integer.parseInt(tokens[1]),new Card(Integer.parseInt(tokens[1]),Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
-        }
-    }
-
 
     //---------------------------------------------------------------------------
-    // User Creation Section
+    // User Creation
     //---------------------------------------------------------------------------
 
     //Query for user input and send input to the addUser method to create the
@@ -104,6 +113,10 @@ public class CardTracker {
 
     }
 
+
+    //---------------------------------------------------------------------------
+    // Checking card balence
+    //---------------------------------------------------------------------------
     public String cardBalence(){
         if(currentUser==null)
             return "Please set current customer!";
@@ -114,6 +127,9 @@ public class CardTracker {
         }
     }
 
+    //---------------------------------------------------------------------------
+    // Buying pastry and coffee
+    //---------------------------------------------------------------------------
     public String buyPastry(){
         if(currentUser==null)
             return "Please set current customer!";
@@ -140,9 +156,29 @@ public class CardTracker {
             return "Thank you "+currentUser+", here is your coffee! Your balence is now $"+cardList.get(cid).balence+" and your coffee count is "+cardList.get(cid).coffeeCount;
     }
 
-    public String quit(){
+    //---------------------------------------------------------------------------
+    // Quiting the program
+    //---------------------------------------------------------------------------
+    public String quit() throws IOException {
+        Writer reWriteFile = new FileWriter("customer_list.txt");
+        BufferedWriter reWriteter = new BufferedWriter(reWriteFile);
+        Iterator custArList = customerList.entrySet().iterator();
+        String storeString="";
+
+        for(int i=0; i<customerList.size();i++){
+            Map.Entry<String,Customer> custEnt = (Map.Entry<String, Customer>) custArList.next();
+            storeString += custEnt.getValue().name +"/"+ custEnt.getValue().cardID +"/"+ cardList.get(custEnt.getValue().cardID).balence +"/"+ cardList.get(custEnt.getValue().cardID).coffeeCount+"\n";
+        }
+
+        reWriteter.write(storeString);
+        reWriteter.flush();
+
         return "Goodbye!";
     }
+
+    //---------------------------------------------------------------------------
+    // Test help methods
+    //---------------------------------------------------------------------------
 
     //Method to clear the contents of the storage files for testing purposes
     public void clearFile() throws IOException {

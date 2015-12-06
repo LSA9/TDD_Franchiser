@@ -16,12 +16,12 @@ public class Main {
         String returnFromCardTracker;
 
         System.out.println("Hello welcom to the coffee card tracker home!");
-        System.out.println("Please select from the following options \n " +
+        System.out.println("Please select from the following options\n " +
                 "1) Create an account\n " +
                 "2) View your card balance\n" +
                 "3) Buy a pastry for $2.00\n" +
                 "4) Buy a coffee for $1.00\n" +
-                "5) Change or set the current user" +
+                "5) Change or set the current user\n" +
                 "6) Quit");
 
 
@@ -29,6 +29,13 @@ public class Main {
             int inNum = inscan.queryRedirect();
             returnFromCardTracker = ct.redirectUserInput(inNum);
             System.out.println(returnFromCardTracker);
+            System.out.println("\nPlease select from the following options\n " +
+                    "1) Create an account\n " +
+                    "2) View your card balance\n" +
+                    "3) Buy a pastry for $2.00\n" +
+                    "4) Buy a coffee for $1.00\n" +
+                    "5) Change or set the current user\n" +
+                    "6) Quit");
         }while(!s.equals("Goodbye"));
 
 
