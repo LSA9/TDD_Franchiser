@@ -1,200 +1,271 @@
-import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.Buffer;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Aronson1 on 12/4/15.
  */
-public class CardTracker {
+public class CardTracker
+{
 
-    //Instance variables
-    InputReciever inscan;
-    FileReader file;
-    Writer writeToFile;
-    BufferedReader reader;
-    BufferedWriter printer;
-    HashMap<String,Customer> customerList = new HashMap<String,Customer>();
-    HashMap<Integer,Card> cardList = new HashMap<Integer,Card>();
-    String currentUser=null;
+   final HashMap<String, Customer> customerList = new HashMap<String, Customer>();
+   final HashMap<Integer, Card>    cardList     = new HashMap<Integer, Card>();
+   //Instance variables
+   private final InputReceiver  inscan;
+   private final File           customerListFile;
+   private final BufferedReader reader;
+   private final BufferedWriter printer;
+   private String currentUser = null;
 
 
-    //Constructor for CardTracker class where instance variables are set and info
-    //from the file storage is read and placed in the proper lists
-    public CardTracker() throws IOException {
-        inscan = new InputReciever();
-        file = new FileReader("customer_list.txt");
-        writeToFile = new FileWriter("customer_list.txt",true);
-        reader = new BufferedReader(file);
-        printer = new BufferedWriter(writeToFile);
-        populateLists();
-    }
+   // Constructor for CardTracker class where instance variables are set and info
+   // from the file storage is read and placed in the proper lists
+   public CardTracker() throws IOException
+   {
+      inscan = new InputReceiver();
+      // the customer list file
+      customerListFile = new File("customer_list.txt");
+      // ensure the customer list file exists
+      customerListFile.createNewFile();
+      reader = new BufferedReader(new FileReader(customerListFile));
+      printer = new BufferedWriter(new FileWriter(customerListFile, true));
+      populateLists();
+   }
 
-    //Populates the customer and card lists with the proper information from the
-    //file storage system
-    public void populateLists() throws IOException {
-        String line;
-        String [] tokens;
-        int index = 0;
+   // Populates the customer and card lists with the proper information from the
+   // file storage system
+   public void populateLists() throws IOException
+   {
+      String   line;
+      String[] tokens;
 
-        while((line = reader.readLine()) != null){
+      while ((line = reader.readLine()) != null)
+      {
+         try
+         {
             tokens = line.split("/");
             customerList.put(tokens[0], new Customer(tokens[0], Integer.parseInt(tokens[1])));
-            cardList.put(Integer.parseInt(tokens[1]),new Card(Integer.parseInt(tokens[1]),Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
-        }
-    }
+            cardList.put(Integer.parseInt(tokens[1]), new Card(Integer.parseInt(tokens[1]),
+                                                               Integer.parseInt(tokens[2]),
+                                                               Integer.parseInt(tokens[3])));
+         }
+         catch (NumberFormatException nfe)
+         {
+            System.err.println("Line with invalid format encountered in customer_list.txt.  Ignoring...");
+         }
+      }
+   }
 
-    //Redirects user input from the main method to their respective methods
-    public String redirectUserInput(int input) throws IOException {
-        String returnString = "";
-        if(input==1)
+   // Redirects user input from the main method to their respective methods
+   public String redirectUserInput(int input) throws IOException
+   {
+      String returnString;
+      switch (input)
+      {
+         case 1:
             returnString = customerCreation();
-        else if(input==2)
-            returnString = cardBalence();
-        else if(input==3)
+            break;
+
+         case 2:
+            returnString = cardBalance();
+            break;
+
+         case 3:
             returnString = buyPastry();
-        else if(input==4)
+            break;
+
+         case 4:
             returnString = buyCoffee();
-        else if(input==5) {
-            System.out.println("Who would you like to set the current customer to?");
+            break;
+
+         case 5:
+            System.out.print("\nPlease enter the current customer: ");
             String currCust = inscan.queryString();
             returnString = setCurrentUser(currCust);
-        }
-        else if(input==6)
+            break;
+
+         case 6:
             returnString = quit();
+            break;
 
-        return returnString;
-    }
+         default:
+            throw new IllegalArgumentException();
+      }
 
-
-    //---------------------------------------------------------------------------
-    // Set current user
-    //---------------------------------------------------------------------------
-    public String setCurrentUser(String name){
-        if(!customerList.containsKey(name))
-            return "No customer exists by that name please try again or create a new customer.";
-        else {
-            currentUser = name;
-            return "Hello " + name + ", what would you like to order?";
-        }
-    }
+      return returnString;
+   }
 
 
-    //---------------------------------------------------------------------------
-    // User Creation
-    //---------------------------------------------------------------------------
-
-    //Query for user input and send input to the addUser method to create the
-    //user and new card for the user
-    public String customerCreation() throws IOException {
-        System.out.println("Please enter your username:\n");
-        String name = inscan.queryString();
-
-        int unique = addUser(name);
-
-        if(unique==1)
-            return "Account Created!";
-        else
-            return "Username already exists please try again";
-    }
-
-    //Create new customer and card objects and store their info in the customer_list.txt
-    //file
-    public int addUser(String name) throws IOException {
-
-        if(customerList.containsKey(name))
-            return -1;
-
-        //Create new customer and card objects
-        Customer newCustomer = new Customer(name, cardList.size()+1);//cardlist.size() is used to give unique id
-        Card newCard = new Card(cardList.size()+1);
-
-        //Add new customer and card objects to the cardList and customerList
-        customerList.put(name, newCustomer);
-        cardList.put(cardList.size()+1,newCard);
-
-        //Create a new string to store in file storage for future runs of program
-        String storeString = newCustomer.name +"/"+ newCustomer.cardID +"/"+ newCard.balence +"/"+ newCard.coffeeCount+"\n";
-        printer.append(storeString);
-        printer.flush();
-        return 1;
-
-    }
+   //---------------------------------------------------------------------------
+   // Set current user
+   //---------------------------------------------------------------------------
+   public String setCurrentUser(String name)
+   {
+      if (!customerList.containsKey(name))
+      {
+         return "No customer account with that name exists. Please try again or create a new customer account.";
+      }
+      else
+      {
+         currentUser = name;
+         return "Hello " + name + ". Welcome back!";
+      }
+   }
 
 
-    //---------------------------------------------------------------------------
-    // Checking card balence
-    //---------------------------------------------------------------------------
-    public String cardBalence(){
-        if(currentUser==null)
-            return "Please set current customer!";
-        else {
-            int cid = customerList.get(currentUser).cardID;
-            int balence = cardList.get(cid).balence;
-            return "Your balence is $" + balence;
-        }
-    }
+   //---------------------------------------------------------------------------
+   // User Creation
+   //---------------------------------------------------------------------------
 
-    //---------------------------------------------------------------------------
-    // Buying pastry and coffee
-    //---------------------------------------------------------------------------
-    public String buyPastry(){
-        if(currentUser==null)
-            return "Please set current customer!";
+   // Query for user input and send input to the addUser method to create the
+   // user and new card for the user
+   public String customerCreation() throws IOException
+   {
+      System.out.print("\nPlease enter your username: ");
+      String name = inscan.queryString();
 
-        int cid = customerList.get(currentUser).cardID;
-        cardList.get(cid).balence += 2;
+      if (addUser(name))
+      {
+         return "Account Created!";
+      }
+      else
+      {
+         return "Username already exists.  Please try again.";
+      }
+   }
 
-        return "Thank you "+currentUser+", here is your pastry! Your balence is now $"+cardList.get(cid).balence+" and your coffee count is "+cardList.get(cid).coffeeCount;
-    }
+   // Create new customer and card objects and store their info in the customer_list.txt
+   // file
+   public boolean addUser(String name) throws IOException
+   {
+      if (customerList.containsKey(name))
+      {
+         return false;
+      }
 
-    public String buyCoffee(){
-        if(currentUser==null)
-            return "Please set current customer!";
+      //Create new customer and card objects
+      int      cardNum     = cardList.size() + 1; //cardlist.size() is used to give unique id
+      Customer newCustomer = new Customer(name, cardNum);
+      Card     newCard     = new Card(cardNum);
 
-        int cid = customerList.get(currentUser).cardID;
-        cardList.get(cid).balence += 1;
-        cardList.get(cid).coffeeCount += 1;
+      //Add new customer and card objects to the cardList and customerList
+      customerList.put(name, newCustomer);
+      cardList.put(cardNum, newCard);
 
-        if(cardList.get(cid).coffeeCount==10){
-            cardList.get(cid).coffeeCount = 0;
-            return "Huray "+currentUser+"! You get a free coffee! Your balence is now $"+cardList.get(cid).balence+" and your coffee count is reset to 0";
-        }
-        else
-            return "Thank you "+currentUser+", here is your coffee! Your balence is now $"+cardList.get(cid).balence+" and your coffee count is "+cardList.get(cid).coffeeCount;
-    }
+      //Create a new string to store in file storage for future runs of program
+      printer.write(
+            newCustomer.name + '/' + newCustomer.cardID + '/' + newCard.balance + '/' + newCard.coffeeCount + '\n');
+      printer.flush();
 
-    //---------------------------------------------------------------------------
-    // Quiting the program
-    //---------------------------------------------------------------------------
-    public String quit() throws IOException {
-        Writer reWriteFile = new FileWriter("customer_list.txt");
-        BufferedWriter reWriteter = new BufferedWriter(reWriteFile);
-        Iterator custArList = customerList.entrySet().iterator();
-        String storeString="";
+      return true;
+   }
 
-        for(int i=0; i<customerList.size();i++){
-            Map.Entry<String,Customer> custEnt = (Map.Entry<String, Customer>) custArList.next();
-            storeString += custEnt.getValue().name +"/"+ custEnt.getValue().cardID +"/"+ cardList.get(custEnt.getValue().cardID).balence +"/"+ cardList.get(custEnt.getValue().cardID).coffeeCount+"\n";
-        }
 
-        reWriteter.write(storeString);
-        reWriteter.flush();
+   //---------------------------------------------------------------------------
+   // Checking card balance
+   //---------------------------------------------------------------------------
+   public String cardBalance()
+   {
+      if (currentUser == null)
+      {
+         return "Please set current customer!";
+      }
+      else
+      {
+         int cid = customerList.get(currentUser).cardID;
+         int balance = cardList.get(cid).balance;
+         return "Your balance is $" + balance;
+      }
+   }
 
-        return "Goodbye!";
-    }
+   //---------------------------------------------------------------------------
+   // Buying pastry and coffee
+   //---------------------------------------------------------------------------
+   public String buyPastry()
+   {
+      if (currentUser == null)
+      {
+         return "Please set current customer!";
+      }
 
-    //---------------------------------------------------------------------------
-    // Test help methods
-    //---------------------------------------------------------------------------
+      Card card = cardList.get(customerList.get(currentUser).cardID);
+      card.balance += 2;
 
-    //Method to clear the contents of the storage files for testing purposes
-    public void clearFile() throws IOException {
-        Writer clearerFile = new FileWriter("customer_list.txt");
-        BufferedWriter clearWriter = new BufferedWriter(clearerFile);
+      return "Thank you " + currentUser + ", here is your pastry!"
+      +"\nYour balance is now $" + card.balance + " and your coffee count is " + card.coffeeCount + ".";
+   }
 
-        clearWriter.write("");
-        clearWriter.flush();
-    }
+   public String buyCoffee()
+   {
+      if (currentUser == null)
+      {
+         return "Please set current customer!";
+      }
+
+      Card card = cardList.get(customerList.get(currentUser).cardID);
+      card.coffeeCount++;
+
+      if (card.coffeeCount == 10)
+      {
+         card.coffeeCount = 0;
+         return "Hurray for you, " + currentUser + "! This is your 10th coffee, so it is free!"
+               + "\nYour balance is still $" + card.balance + " and your coffee count is reset to 0.";
+      }
+      else
+      {
+         card.balance++;
+         return "Thank you " + currentUser + ", here is your coffee!"
+               + "\nYour balance is now $" + card.balance + " and your coffee count is " + card.coffeeCount + "."
+               + "\nEach 10th coffee is free!";
+      }
+   }
+
+   //---------------------------------------------------------------------------
+   // Quiting the program
+   //---------------------------------------------------------------------------
+   public String quit() throws IOException
+   {
+      reader.close();
+      printer.close();
+      // created a BufferedWriter to overwrite the customer list file
+      BufferedWriter reWriter = new BufferedWriter(new FileWriter(customerListFile, false));
+      StringBuilder  storeSB  = new StringBuilder();
+
+      for (Map.Entry<String, Customer> custEnt : customerList.entrySet())
+      {
+         Customer cust = custEnt.getValue();
+         Card card = cardList.get(cust.cardID);
+         storeSB.append(cust.name)
+                .append('/')
+                .append(cust.cardID)
+                .append('/')
+                .append(card.balance)
+                .append('/')
+                .append(card.coffeeCount)
+                .append('\n');
+      }
+
+      reWriter.write(storeSB.toString());
+      reWriter.close(); // flushes the stream before closing it
+
+      return "Goodbye!";
+   }
+
+   //---------------------------------------------------------------------------
+   // Test help methods
+   //---------------------------------------------------------------------------
+
+   //Method to clear the contents of the storage files for testing purposes
+   public void clearFile() throws IOException
+   {
+      BufferedWriter clearWriter = new BufferedWriter(new FileWriter(customerListFile, false));
+      clearWriter.write("");
+      clearWriter.close(); // flushes the stream before closing it
+   }
 
 }
