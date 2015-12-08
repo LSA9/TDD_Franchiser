@@ -3,7 +3,7 @@ import java.io.IOException;
 /**
  * Created by Aronson1 on 12/4/15.
  */
-public class Main
+public class NardCard
 {
    public static void main(String[] args) throws IOException
    {
